@@ -32,9 +32,13 @@ class Field {
       Array(width).fill(fieldCharacter)
     );
     const availablePositions = Array.from(
-      { length: height * width - 1 },
-      (_, index) => index + 1
+      { length: height * width },
+      (_, index) => index
     );
+    const startPositionIndex = Math.floor(Math.random() * availablePositions.length);
+    const startPosition = availablePositions.splice(startPositionIndex, 1)[0];
+    field[Math.floor(startPosition / width)][startPosition % width] = pathCharacter;
+
     const hatPositionIndex = Math.floor(Math.random() * availablePositions.length);
     const hatPosition = availablePositions.splice(hatPositionIndex, 1)[0];
     field[Math.floor(hatPosition / width)][hatPosition % width] = hat;
@@ -55,15 +59,14 @@ class Field {
       field[Math.floor(position / width)][position % width] = hole;
     }
 
-    field[0][0] = pathCharacter;
     return field;
   }
 }
 
 function play() {
   const field = new Field(Field.generateField(10, 10, 20));
-  let playerRow = 0;
-  let playerColumn = 0;
+  let playerRow = field._field.findIndex((row) => row.includes(pathCharacter));
+  let playerColumn = field._field[playerRow].indexOf(pathCharacter);
 
   console.log("Find your hat! Move with W (up), A (left), S (down), or D (right).");
   console.log(field.print());
